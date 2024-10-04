@@ -25,7 +25,7 @@ openssl req -x509 -newkey rsa:4096 -keyout nginx.key -out nginx.cer -sha256 -day
 
 Next we need to slightly modify the nginx config, so that it will always upgrade to an HTTPS connection (at least on port 80). After that, simply restart the webserver.
 
-```conf #5,7-12,26-28
+```conf #5,7-12,23-25
 # SNIP
 
 # Add headers and remove server_tokens
@@ -65,7 +65,7 @@ You can also add other headers like HSTS, which would prevent the browser from e
 ## Hardening AdGuard
 If you use AdGuard on your travel router to block certain domains, you can (and should) configure it to use your previously added certificate. It will complain that the certificate is invalid, but in our case self signed certificates are OK (you can also issue a real one).
 
-![Importing certificates](../_assets/GliNet_new_certificate.png)
+![Importing certificates](../assets/GliNet_new_certificate.png)
 
 ## The problem with insecure cookies
 Since nginx does not append the `secure` flag on cookies, if your browser gets redirected it might happen, that it tries so over HTTP. This would expose your session cookie again, which we try to prevent.
