@@ -136,4 +136,4 @@ async def handler(self, request: web.Request) -> web.Response | web.StreamRespon
 
 ## Disclosure
 ---
-I disclosed this issue back in August 2023, however I was told, that "user permissions can only be considered a visual change in the Home Assistant UI", which is also highlighted in the official documentation [here](https://www.home-assistant.io/docs/authentication/#user-accounts).
+I reported this issue back in August 2023, however I was told, that "user permissions can only be considered a visual change in the Home Assistant UI", which is also highlighted in the official documentation [here](https://www.home-assistant.io/docs/authentication/#user-accounts).
