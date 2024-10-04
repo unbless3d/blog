@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width,initial-scale=1">
-    <meta name="turbo-cache-control" content="no-cache" data-turbo-track="reload" data-track-token="3.6.0.781365518405">
+    <meta name="turbo-cache-control" content="no-cache" data-turbo-track="reload" data-track-token="3.6.0.781366697435">
 
     <!-- See retype.com -->
     <meta name="generator" content="Retype 3.6.0">
@@ -11,7 +11,7 @@
     <!-- Primary Meta Tags -->
     <title>Authorization bypass in HomeAssistant | unbless3d</title>
     <meta name="title" content="Authorization bypass in HomeAssistant | unbless3d">
-    <meta name="description" content="This writeup describes a vulnerability in HomeAssistant, a popular smart home gateway.">
+    <meta name="description" content="HomeAssistant suffers from an authorization bypass, which allows low privileged users access to all addons.">
 
     <!-- Canonical -->
     <link rel="canonical" href="https://blog.unbless3d.xyz/homeassistant/authorization-bypass-in-homeassistant/">
@@ -20,24 +20,24 @@
     <meta property="og:type" content="website">
     <meta property="og:url" content="https://blog.unbless3d.xyz/homeassistant/authorization-bypass-in-homeassistant/">
     <meta property="og:title" content="Authorization bypass in HomeAssistant | unbless3d">
-    <meta property="og:description" content="This writeup describes a vulnerability in HomeAssistant, a popular smart home gateway.">
+    <meta property="og:description" content="HomeAssistant suffers from an authorization bypass, which allows low privileged users access to all addons.">
     <meta property="og:image" content="https://blog.unbless3d.xyz/homeassistant/hass_auth_bypass.png">
 
     <!-- Twitter -->
     <meta property="twitter:card" content="summary_large_image">
     <meta property="twitter:url" content="https://blog.unbless3d.xyz/homeassistant/authorization-bypass-in-homeassistant/">
     <meta property="twitter:title" content="Authorization bypass in HomeAssistant | unbless3d">
-    <meta property="twitter:description" content="This writeup describes a vulnerability in HomeAssistant, a popular smart home gateway.">
+    <meta property="twitter:description" content="HomeAssistant suffers from an authorization bypass, which allows low privileged users access to all addons.">
     <meta property="twitter:image" content="https://blog.unbless3d.xyz/homeassistant/hass_auth_bypass.png">
 
     <script data-cfasync="false">(function () { var el = document.documentElement, m = localStorage.getItem("doc_theme"), wm = window.matchMedia; if (m === "dark" || (!m && wm && wm("(prefers-color-scheme: dark)").matches)) { el.classList.add("dark") } else { el.classList.remove("dark") } })();</script>
 
-    <link href="../../resources/css/retype.css?v=3.6.0.781365518405" rel="stylesheet">
+    <link href="../../resources/css/retype.css?v=3.6.0.781366697435" rel="stylesheet">
 
-    <script data-cfasync="false" src="../../resources/js/config.js?v=3.6.0.781365518405" data-turbo-eval="false" defer></script>
+    <script data-cfasync="false" src="../../resources/js/config.js?v=3.6.0.781366697435" data-turbo-eval="false" defer></script>
     <script data-cfasync="false" src="../../resources/js/retype.js?v=3.6.0" data-turbo-eval="false" defer></script>
-    <script id="lunr-js" data-cfasync="false" src="../../resources/js/lunr.js?v=3.6.0.781365518405" data-turbo-eval="false" defer></script>
-    <script id="prism-js" data-cfasync="false" src="../../resources/js/prism.js?v=3.6.0.781365518405" defer></script>
+    <script id="lunr-js" data-cfasync="false" src="../../resources/js/lunr.js?v=3.6.0.781366697435" data-turbo-eval="false" defer></script>
+    <script id="prism-js" data-cfasync="false" src="../../resources/js/prism.js?v=3.6.0.781366697435" defer></script>
 </head>
 <body>
     <div id="docs-app" class="relative text-base antialiased text-gray-700 bg-white font-body dark:bg-dark-850 dark:text-dark-300">
@@ -158,6 +158,10 @@
         <span>Authorization bypass in HomeAssistant</span>
     </h1>
 </doc-anchor-target>
+<div class="-mt-3 mb-12 flex flex-wrap text-sm text-gray-400 dark:text-dark-350 items-center">
+    <div class="flex items-center shrink-0">Published&nbsp;<span>2024-10-04</span></div>
+</div>
+
 <hr>
 <p>This writeup describes a vulnerability in HomeAssistant, a popular smart home gateway. HomeAssistant consists of multiple parts, making up its ecosystem and its functionality can be further extended via integrations or addons.</p>
 <p>Unfortunately, HomeAssistant (HASS) uses its name quite often within their ecosystem, so we have to make some important distinctions:</p>
@@ -171,10 +175,10 @@
 </blockquote>
 <p>I will mostly talk about HASS Core in this blog, but I&#x27;ll explicitly mention specific components where it is important.</p>
 <doc-anchor-target id="the-vulnerability">
-    <h1>
+    <h2>
         <doc-anchor-trigger class="header-anchor-trigger" to="#the-vulnerability">#</doc-anchor-trigger>
         <span>The Vulnerability</span>
-    </h1>
+    </h2>
 </doc-anchor-target>
 <hr>
 <p>HomeAssistant suffers from an authorization bypass, where unprivileged users can access addons, restricted to administrators. The vulnerability lies in HomeAssistants ingress functionality, which proxies requests to the addon. During this process, no validation is performed whether a user is allowed to access the addon.</p>
@@ -189,10 +193,10 @@
 <p><strong>Important Notice</strong>
 This vulnerability has already been disclosed to HomeAssistant in August 2023, more information about this can be seen below.</p>
 <doc-anchor-target id="affected-versions">
-    <h2>
+    <h3>
         <doc-anchor-trigger class="header-anchor-trigger" to="#affected-versions">#</doc-anchor-trigger>
         <span>Affected Versions</span>
-    </h2>
+    </h3>
 </doc-anchor-target>
 <p>This vulnerability can only be exploited on Supervised or HAOS installations where addons are present:</p>
 <ul>
@@ -201,16 +205,16 @@ This vulnerability has already been disclosed to HomeAssistant in August 2023, m
 <li>Operating System &lt;= 13.1</li>
 </ul>
 <doc-anchor-target id="how-does-it-work">
-    <h2>
+    <h3>
         <doc-anchor-trigger class="header-anchor-trigger" to="#how-does-it-work">#</doc-anchor-trigger>
         <span>How does it work</span>
-    </h2>
+    </h3>
 </doc-anchor-target>
 <doc-anchor-target id="addons-and-addon-registration">
-    <h3>
+    <h4>
         <doc-anchor-trigger class="header-anchor-trigger" to="#addons-and-addon-registration">#</doc-anchor-trigger>
         <span>Addons and Addon registration</span>
-    </h3>
+    </h4>
 </doc-anchor-target>
 <p>Addons are used to add extra functionality to HomeAssistant, like a web TTY or file editor. These addons run in a separate docker container and can be accessed through HomeAssistant via the ingress functionality.</p>
 <p>As soon as the HASSIO integration (the &quot;supervisor&quot; integration) starts its <a href="https://github.com/home-assistant/core/blob/2024.6.1/homeassistant/components/hassio/__init__.py#L302">initialization</a>, <code v-pre>async_setup_addon_panel()</code> is called, which then retrieves a list of addons from supervisor and registers them as a <code v-pre>Panel</code>:</p>
@@ -241,10 +245,10 @@ This is the base panel class, used by every panel within HomeAssistant</li>
 </li>
 </ul>
 <doc-anchor-target id="panels">
-    <h3>
+    <h4>
         <doc-anchor-trigger class="header-anchor-trigger" to="#panels">#</doc-anchor-trigger>
         <span>Panels</span>
-    </h3>
+    </h4>
 </doc-anchor-target>
 <p>Panels can be described as pages, which are rendered inside the HomeAssistant frontend. As described previously, addon frontends are internally handled as <code v-pre>Panel</code> objects.</p>
 <p>When querying the websocket API using <code v-pre>{&quot;type&quot;:&quot;get_panels&quot;, &quot;id&quot;:XX}</code> as an administrator, HASS returns a list of available panels. Some of these panels have the <code v-pre>require_admin</code> field set to <code v-pre>true</code>. According to the <a href="https://www.home-assistant.io/integrations/panel_custom/#require_admin">custom panel documentation</a>, only administrators should be able to see these panels. When querying the same endpoint as a non-admin user, only panels with <code v-pre>require_admin</code> set to <code v-pre>false</code> are returned.</p>
@@ -266,10 +270,10 @@ def websocket_get_panels(hass: HomeAssistant, connection: ActiveConnection, msg:
 <p>These panels will only be excluded from the sidebar for non-administrators. You can also find this in one of the comments in the panel definition: <a href="https://github.com/home-assistant/core/blob/b28cdcfc497dcaabc2d88ac8d3dc4c555edfcbd7/homeassistant/components/frontend/__init__.py#L239"><code v-pre>homeassistant\components\frontend\__init__.py</code></a></p>
 </blockquote>
 <doc-anchor-target id="the-supervisor-api">
-    <h3>
+    <h4>
         <doc-anchor-trigger class="header-anchor-trigger" to="#the-supervisor-api">#</doc-anchor-trigger>
         <span>The supervisor API</span>
-    </h3>
+    </h4>
 </doc-anchor-target>
 <p>HomeAssistant uses regex to partially restrict access to specific resources - either by completely blocking them or requiring admin permissions. This is true for both the HTTP API and the websocket API. One key difference between these APIs is that the websocket API is always authenticated.</p>
 <p>HASS Core also publishes a supervisor API and proxies requests to the supervisor. This API requires a user to have administrative rights with two exceptions:</p>
@@ -280,7 +284,7 @@ def websocket_get_panels(hass: HomeAssistant, connection: ActiveConnection, msg:
 <code v-pre>{&quot;type&quot;:&quot;supervisor/api&quot;,&quot;endpoint&quot;:&quot;/addons/{slug}/info&quot;,&quot;method&quot;:&quot;get&quot;,&quot;id&quot;:XX}</code></li>
 </ul>
 <div class="codeblock-wrapper"><doc-codeblock>
-<pre class="language-python"><code v-pre class="language-python"># Endpoints needed for ingress can't require admin because addons can set `panel_admin: false`
+<pre class="language-python"><code v-pre class="language-python">## Endpoints needed for ingress can't require admin because addons can set `panel_admin: false`
 WS_NO_ADMIN_ENDPOINTS = re.compile(
 	r&quot;^(?:&quot;
 	r&quot;|/ingress/(session|validate_session)&quot;
@@ -288,14 +292,14 @@ WS_NO_ADMIN_ENDPOINTS = re.compile(
 	r&quot;)$&quot;
 )
 
-# Here is more stuff
+## Here is more stuff
 
 async def websocket_supervisor_api(hass: HomeAssistant, connection: ActiveConnection, msg: dict[str, Any] -&gt; None:
 	&quot;&quot;&quot;Websocket handler to call Supervisor API.&quot;&quot;&quot;
 	
 	if not connection.user.is_admin and not WS_NO_ADMIN_ENDPOINTS.match(msg[ATTR_ENDPOINT]):
 		raise Unauthorized
-	# Stuff continues here</code></pre>
+	## Stuff continues here</code></pre>
 </doc-codeblock></div>
 <p>These two requests however are enough to access an addon, provided the addon slug is known. These slugs can be easily enumerated, but this is outside the scope of this blog.</p>
 <p>The first request is used to get information about a specific addon, which includes its access path (also called <code v-pre>ingress URL</code>).</p>
@@ -304,24 +308,37 @@ async def websocket_supervisor_api(hass: HomeAssistant, connection: ActiveConnec
 <pre class="language-python"><code v-pre class="language-python">async def handler(self, request: web.Request) -&gt; web.Response | web.StreamResponse | web.WebSocketResponse:
 	&quot;&quot;&quot;Route data to Supervisor ingress service.&quot;&quot;&quot;
 	
-	# Check Ingress Session
+	## Check Ingress Session
 	session = request.cookies.get(COOKIE_INGRESS)
 	if not self.sys_ingress.validate_session(session):
 		_LOGGER.warning(&quot;No valid ingress session %s&quot;, session)
 		raise HTTPUnauthorized()
 		
-	# Process requests</code></pre>
+	## Process requests</code></pre>
 </doc-codeblock></div>
 <doc-anchor-target id="disclosure">
-    <h1>
+    <h2>
         <doc-anchor-trigger class="header-anchor-trigger" to="#disclosure">#</doc-anchor-trigger>
         <span>Disclosure</span>
-    </h1>
+    </h2>
 </doc-anchor-target>
 <hr>
 <p>I disclosed this issue back in August 2023, however I was told, that &quot;user permissions can only be considered a visual change in the Home Assistant UI&quot;, which is also highlighted in the official documentation <a href="https://www.home-assistant.io/docs/authentication/#user-accounts">here</a>.</p>
 
-                                
+                                <div class="flex items-center mt-6 mb-6 clear-both">
+                                    <span>
+                                        <a href="../../tags/">
+                                            <svg class="inline-block -mb-px mr-1.5 text-blue-500 dark:text-blue-400" xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" overflow="visible" fill="currentColor"><g><path d="M21.3 9.88l-8.59-8.59C12.52 1.11 12.27 1 12 1H2c-.55 0-1 .45-1 1v10c0 .27.11.52.29.71l8.59 8.58c.57.57 1.32.88 2.12.88s1.55-.31 2.12-.88l7.17-7.17a3.009 3.009 0 00.01-4.24zm-1.42 2.82l-7.17 7.17c-.39.39-1.02.39-1.42 0L3 11.59V3h8.59l8.29 8.29c.39.39.39 1.03 0 1.41z" /><path d="M7.01 6C6.45 6 6 6.45 6 7s.45 1 1 1 1-.45 1-1-.44-1-.99-1z" /></g></svg>
+                                        </a>
+                                        <span class="mr-2"><a href="../../tags/homeassistant/" class="no-link inline-flex align-middle items-center justify-center font-medium leading-none whitespace-nowrap text-blue-500 dark:text-blue-400 border border-blue-500 dark:border-blue-400 hover:bg-blue-100 dark:hover:bg-transparent dark:hover:border-blue-200 dark:hover:text-blue-200 transition-colors duration-200 ease-out h-6 px-2 text-xs rounded-md">
+                                    <span>homeassistant</span>
+                                </a></span>
+                                        <span class="mr-2"><a href="../../tags/authorization-bypass/" class="no-link inline-flex align-middle items-center justify-center font-medium leading-none whitespace-nowrap text-blue-500 dark:text-blue-400 border border-blue-500 dark:border-blue-400 hover:bg-blue-100 dark:hover:bg-transparent dark:hover:border-blue-200 dark:hover:text-blue-200 transition-colors duration-200 ease-out h-6 px-2 text-xs rounded-md">
+                                    <span>authorization bypass</span>
+                                </a></span>
+                                    </span>
+                                </div>
+                
                                 <!-- Required only on API pages -->
                                 <doc-toolbar-member-filter-no-results></doc-toolbar-member-filter-no-results>
                             </div>
@@ -379,6 +396,6 @@ async def websocket_supervisor_api(hass: HomeAssistant, connection: ActiveConnec
 
     <div id="docs-overlay-target"></div>
 
-    <script data-cfasync="false">window.__DOCS__ = { "title": "Authorization bypass in HomeAssistant", level: 2, icon: "file", hasPrism: true, hasMermaid: false, hasMath: false, tocDepth: 23 }</script>
+    <script data-cfasync="false">window.__DOCS__ = { "title": "Authorization bypass", level: 2, icon: "file", hasPrism: true, hasMermaid: false, hasMath: false, tocDepth: 23 }</script>
 </body>
 </html>
