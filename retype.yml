@@ -5,3 +5,7 @@ branding:
 
 meta:
   title: " | unbless3d"
+
+snippets:
+  lineNumbers:
+    - *

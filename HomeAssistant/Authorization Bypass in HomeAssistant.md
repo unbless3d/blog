@@ -65,7 +65,7 @@ Panels can be described as pages, which are rendered inside the HomeAssistant fr
 
 When querying the websocket API using `{"type":"get_panels", "id":XX}` as an administrator, HASS returns a list of available panels. Some of these panels have the `require_admin` field set to `true`. According to the [custom panel documentation](https://www.home-assistant.io/integrations/panel_custom/#require_admin), only administrators should be able to see these panels. When querying the same endpoint as a non-admin user, only panels with `require_admin` set to `false` are returned.
 
-```python
+```python #10
 @callback
 @websocket_api.websocket_command({"type": "get_panels"})
 def websocket_get_panels(hass: HomeAssistant, connection: ActiveConnection, msg: dict[str, Any]) -> None:
@@ -93,7 +93,7 @@ HASS Core also publishes a supervisor API and proxies requests to the supervisor
 - Requesting and validating an ingress session token
   `{"type":"supervisor/api","endpoint":"/addons/{slug}/info","method":"get","id":XX}`
 
-```python
+```python #12
 ## Endpoints needed for ingress can't require admin because addons can set `panel_admin: false`
 WS_NO_ADMIN_ENDPOINTS = re.compile(
 	r"^(?:"
@@ -118,7 +118,7 @@ The first request is used to get information about a specific addon, which inclu
 
 The second request issues a session cookie (called `ingress_session`) by the supervisor, which is [required to access the addon URL](https://github.com/home-assistant/supervisor/blob/2024.06.1/supervisor/api/ingress.py#L143). 
 
-```python
+```python #6
 async def handler(self, request: web.Request) -> web.Response | web.StreamResponse | web.WebSocketResponse:
 	"""Route data to Supervisor ingress service."""
 	
