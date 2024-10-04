@@ -2,8 +2,12 @@
 date: 2024-10-04
 description: HomeAssistant suffers from an authorization bypass, which allows low privileged users access to all addons.
 label: Authorization bypass
-tags: [HomeAssistant, Authorization bypass]
+tags:
+  - HomeAssistant
+  - Authorization
+  - bypass
 layout: page
+icon: home-fill
 ---
 
 # Authorization bypass in HomeAssistant
@@ -29,7 +33,7 @@ The impact heavily depends on the installed addons. In case the SSH & Web Termin
 
 In order to access an addon, a valid *ingress session cookie* and *ingress URL* is required. These values can be requested by any low privileged user who knows the *addon slug*.
 
-![Authorization bypass](hass_auth_bypass.png)
+![Authorization bypass](./_assets/hass_auth_bypass.png)
 
 At the time of writing, this vulnerability is present on the latest version of HASS Supervised and HASS Operating System. According to the [opt-in integration analytics](https://www.home-assistant.io/integrations/hassio) provided by Home Assistant, the affected integration was introduced in Home Assistant 0.42 and is used by 80.1% of the active installations (as of October 2024). Although not tested, the vulnerability might also affect Home Assistant Cloud, since it proxies requests.
 
