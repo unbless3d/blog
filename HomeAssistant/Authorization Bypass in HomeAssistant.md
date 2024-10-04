@@ -1,4 +1,4 @@
-# Introduction
+# Authorization bypass in HomeAssistant
 ---
 This writeup describes a vulnerability in HomeAssistant, a popular smart home gateway. HomeAssistant consists of multiple parts, making up its ecosystem and its functionality can be further extended via integrations or addons.
 
