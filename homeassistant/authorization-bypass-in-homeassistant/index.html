@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width,initial-scale=1">
-    <meta name="turbo-cache-control" content="no-cache" data-turbo-track="reload" data-track-token="3.6.0.781369040422">
+    <meta name="turbo-cache-control" content="no-cache" data-turbo-track="reload" data-track-token="3.6.0.781370367315">
 
     <!-- See retype.com -->
     <meta name="generator" content="Retype 3.6.0">
@@ -32,12 +32,12 @@
 
     <script data-cfasync="false">(function () { var el = document.documentElement, m = localStorage.getItem("doc_theme"), wm = window.matchMedia; if (m === "dark" || (!m && wm && wm("(prefers-color-scheme: dark)").matches)) { el.classList.add("dark") } else { el.classList.remove("dark") } })();</script>
 
-    <link href="../../resources/css/retype.css?v=3.6.0.781369040422" rel="stylesheet">
+    <link href="../../resources/css/retype.css?v=3.6.0.781370367315" rel="stylesheet">
 
-    <script data-cfasync="false" src="../../resources/js/config.js?v=3.6.0.781369040422" data-turbo-eval="false" defer></script>
+    <script data-cfasync="false" src="../../resources/js/config.js?v=3.6.0.781370367315" data-turbo-eval="false" defer></script>
     <script data-cfasync="false" src="../../resources/js/retype.js?v=3.6.0" data-turbo-eval="false" defer></script>
-    <script id="lunr-js" data-cfasync="false" src="../../resources/js/lunr.js?v=3.6.0.781369040422" data-turbo-eval="false" defer></script>
-    <script id="prism-js" data-cfasync="false" src="../../resources/js/prism.js?v=3.6.0.781369040422" defer></script>
+    <script id="lunr-js" data-cfasync="false" src="../../resources/js/lunr.js?v=3.6.0.781370367315" data-turbo-eval="false" defer></script>
+    <script id="prism-js" data-cfasync="false" src="../../resources/js/prism.js?v=3.6.0.781370367315" defer></script>
 </head>
 <body>
     <div id="docs-app" class="relative text-base antialiased text-gray-700 bg-white font-body dark:bg-dark-850 dark:text-dark-300">
@@ -282,8 +282,8 @@ This is the base panel class, used by every panel within HomeAssistant</li>
 </doc-anchor-target>
 <p>Panels can be described as pages, which are rendered inside the HomeAssistant frontend. As described previously, addon frontends are internally handled as <code v-pre>Panel</code> objects.</p>
 <p>When querying the websocket API using <code v-pre>{&quot;type&quot;:&quot;get_panels&quot;, &quot;id&quot;:XX}</code> as an administrator, HASS returns a list of available panels. Some of these panels have the <code v-pre>require_admin</code> field set to <code v-pre>true</code>. According to the <a href="https://www.home-assistant.io/integrations/panel_custom/#require_admin">custom panel documentation</a>, only administrators should be able to see these panels. When querying the same endpoint as a non-admin user, only panels with <code v-pre>require_admin</code> set to <code v-pre>false</code> are returned.</p>
-<div class="codeblock-wrapper"><doc-codeblock>
-<pre class="language-python"><code v-pre class="language-python">@callback
+<div class="codeblock-wrapper"><doc-codeblock line-numbers>
+<pre class="language-python" data-line="10"><code v-pre class="language-python">@callback
 @websocket_api.websocket_command({&quot;type&quot;: &quot;get_panels&quot;})
 def websocket_get_panels(hass: HomeAssistant, connection: ActiveConnection, msg: dict[str, Any]) -&gt; None:
 	&quot;&quot;&quot;Handle get panels command.&quot;&quot;&quot;
@@ -327,8 +327,8 @@ def websocket_get_panels(hass: HomeAssistant, connection: ActiveConnection, msg:
 <li>Requesting and validating an ingress session token
 <code v-pre>{&quot;type&quot;:&quot;supervisor/api&quot;,&quot;endpoint&quot;:&quot;/addons/{slug}/info&quot;,&quot;method&quot;:&quot;get&quot;,&quot;id&quot;:XX}</code></li>
 </ul>
-<div class="codeblock-wrapper"><doc-codeblock>
-<pre class="language-python"><code v-pre class="language-python">## Endpoints needed for ingress can't require admin because addons can set `panel_admin: false`
+<div class="codeblock-wrapper"><doc-codeblock line-numbers>
+<pre class="language-python" data-line="12"><code v-pre class="language-python">## Endpoints needed for ingress can't require admin because addons can set `panel_admin: false`
 WS_NO_ADMIN_ENDPOINTS = re.compile(
 	r&quot;^(?:&quot;
 	r&quot;|/ingress/(session|validate_session)&quot;
@@ -348,8 +348,8 @@ async def websocket_supervisor_api(hass: HomeAssistant, connection: ActiveConnec
 <p>These two requests however are enough to access an addon, provided the addon slug is known. These slugs can be easily enumerated, but this is outside the scope of this blog.</p>
 <p>The first request is used to get information about a specific addon, which includes its access path (also called <code v-pre>ingress URL</code>).</p>
 <p>The second request issues a session cookie (called <code v-pre>ingress_session</code>) by the supervisor, which is <a href="https://github.com/home-assistant/supervisor/blob/2024.06.1/supervisor/api/ingress.py#L143">required to access the addon URL</a>.</p>
-<div class="codeblock-wrapper"><doc-codeblock>
-<pre class="language-python"><code v-pre class="language-python">async def handler(self, request: web.Request) -&gt; web.Response | web.StreamResponse | web.WebSocketResponse:
+<div class="codeblock-wrapper"><doc-codeblock line-numbers>
+<pre class="language-python" data-line="6"><code v-pre class="language-python">async def handler(self, request: web.Request) -&gt; web.Response | web.StreamResponse | web.WebSocketResponse:
 	&quot;&quot;&quot;Route data to Supervisor ingress service.&quot;&quot;&quot;
 	
 	## Check Ingress Session
