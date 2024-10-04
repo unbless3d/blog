@@ -3,6 +3,12 @@ branding:
   title: unbless3d
   label: Blog
 
+links:
+  - text: GitHub
+    link: https://github.com/unbless3d
+    icon: mark-github
+    target: blank
+
 meta:
   title: " | unbless3d"
 
