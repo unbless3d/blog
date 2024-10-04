@@ -93,7 +93,7 @@ HASS Core also publishes a supervisor API and proxies requests to the supervisor
 - Requesting and validating an ingress session token
   `{"type":"supervisor/api","endpoint":"/addons/{slug}/info","method":"get","id":XX}`
 
-```python #12
+```python #14
 ## Endpoints needed for ingress can't require admin because addons can set `panel_admin: false`
 WS_NO_ADMIN_ENDPOINTS = re.compile(
 	r"^(?:"
