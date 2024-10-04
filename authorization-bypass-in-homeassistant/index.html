@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width,initial-scale=1">
-    <meta name="turbo-cache-control" content="no-cache" data-turbo-track="reload" data-track-token="3.6.0.781374052441">
+    <meta name="turbo-cache-control" content="no-cache" data-turbo-track="reload" data-track-token="3.6.0.781374331798">
 
     <!-- See retype.com -->
     <meta name="generator" content="Retype 3.6.0">
@@ -21,21 +21,23 @@
     <meta property="og:url" content="https://blog.unbless3d.xyz/authorization-bypass-in-homeassistant/">
     <meta property="og:title" content="Authorization bypass in HomeAssistant | unbless3d">
     <meta property="og:description" content="HomeAssistant suffers from an authorization bypass, which allows low privileged users access to all addons.">
+    <meta property="og:image" content="https://blog.unbless3d.xyz/assets/hass_auth_bypass.png">
 
     <!-- Twitter -->
     <meta property="twitter:card" content="summary_large_image">
     <meta property="twitter:url" content="https://blog.unbless3d.xyz/authorization-bypass-in-homeassistant/">
     <meta property="twitter:title" content="Authorization bypass in HomeAssistant | unbless3d">
     <meta property="twitter:description" content="HomeAssistant suffers from an authorization bypass, which allows low privileged users access to all addons.">
+    <meta property="twitter:image" content="https://blog.unbless3d.xyz/assets/hass_auth_bypass.png">
 
     <script data-cfasync="false">(function () { var el = document.documentElement, m = localStorage.getItem("doc_theme"), wm = window.matchMedia; if (m === "dark" || (!m && wm && wm("(prefers-color-scheme: dark)").matches)) { el.classList.add("dark") } else { el.classList.remove("dark") } })();</script>
 
-    <link href="../resources/css/retype.css?v=3.6.0.781374052441" rel="stylesheet">
+    <link href="../resources/css/retype.css?v=3.6.0.781374331798" rel="stylesheet">
 
-    <script data-cfasync="false" src="../resources/js/config.js?v=3.6.0.781374052441" data-turbo-eval="false" defer></script>
+    <script data-cfasync="false" src="../resources/js/config.js?v=3.6.0.781374331798" data-turbo-eval="false" defer></script>
     <script data-cfasync="false" src="../resources/js/retype.js?v=3.6.0" data-turbo-eval="false" defer></script>
-    <script id="lunr-js" data-cfasync="false" src="../resources/js/lunr.js?v=3.6.0.781374052441" data-turbo-eval="false" defer></script>
-    <script id="prism-js" data-cfasync="false" src="../resources/js/prism.js?v=3.6.0.781374052441" defer></script>
+    <script id="lunr-js" data-cfasync="false" src="../resources/js/lunr.js?v=3.6.0.781374331798" data-turbo-eval="false" defer></script>
+    <script id="prism-js" data-cfasync="false" src="../resources/js/prism.js?v=3.6.0.781374331798" defer></script>
 </head>
 <body>
     <div id="docs-app" class="relative text-base antialiased text-gray-700 bg-white font-body dark:bg-dark-850 dark:text-dark-300">
@@ -197,7 +199,7 @@
 <p>The impact heavily depends on the installed addons. In case the SSH &amp; Web Terminal Add-on is installed, a user could access the addon&#x27;s panel and gain RCE on the system.</p>
 <p>In order to access an addon, a valid <em>ingress session cookie</em> and <em>ingress URL</em> is required. These values can be requested by any low privileged user who knows the <em>addon slug</em>.</p>
 <p><figure class="content-center">
-    <img src="./_assets/hass_auth_bypass.png" alt="Authorization bypass">
+    <img src="../assets/hass_auth_bypass.png" alt="Authorization bypass">
     <figcaption class="caption">Authorization bypass</figcaption>
 </figure>
 </p>
