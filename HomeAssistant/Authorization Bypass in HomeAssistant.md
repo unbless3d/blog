@@ -15,7 +15,9 @@ Unfortunately, HomeAssistant (HASS) uses its name quite often within their ecosy
 - HASS Supervisor - It provides quality of life features like backups for HASS Core. When used with HAOS, it can also manage the OS. Sometimes it is referred to by its former name "HASSIO".
 - HAOS - The HomeAssistant Operating System can be described as a tailored Docker Engine. It basically runs each component within its own container - this includes stuff like CoreDNS, HASS Core, HASS Supervisor, HASS Observer, different addons and a bunch of other components...
 
-> If you use both HASS Core and HASS Supervisor (not the OS!), this is called a supervised installation.
+!!!
+If you use both HASS Core and HASS Supervisor (not the OS!), this is called a supervised installation.
+!!!
 
 I will mostly talk about HASS Core in this blog, but I'll explicitly mention specific components where it is important.
 
@@ -31,8 +33,9 @@ In order to access an addon, a valid *ingress session cookie* and *ingress URL* 
 
 At the time of writing, this vulnerability is present on the latest version of HASS Supervised and HASS Operating System. According to the [opt-in integration analytics](https://www.home-assistant.io/integrations/hassio) provided by Home Assistant, the affected integration was introduced in Home Assistant 0.42 and is used by 80.1% of the active installations (as of October 2024). Although not tested, the vulnerability might also affect Home Assistant Cloud, since it proxies requests.
 
-**Important Notice**
+!!! Important Notice
 This vulnerability has already been disclosed to HomeAssistant in August 2023, more information about this can be seen below.
+!!!
 
 ### Affected Versions
 This vulnerability can only be exploited on Supervised or HAOS installations where addons are present:
@@ -77,7 +80,9 @@ def websocket_get_panels(hass: HomeAssistant, connection: ActiveConnection, msg:
 	connection.send_message(websocket_api.result_message(msg["id"], panels))
 ```
 
-> These panels will only be excluded from the sidebar for non-administrators. You can also find this in one of the comments in the panel definition: [`homeassistant\components\frontend\__init__.py`](https://github.com/home-assistant/core/blob/b28cdcfc497dcaabc2d88ac8d3dc4c555edfcbd7/homeassistant/components/frontend/__init__.py#L239)
+!!!
+These panels will only be excluded from the sidebar for non-administrators. You can also find this in one of the comments in the panel definition: [`homeassistant\components\frontend\__init__.py`](https://github.com/home-assistant/core/blob/b28cdcfc497dcaabc2d88ac8d3dc4c555edfcbd7/homeassistant/components/frontend/__init__.py#L239)
+!!!
 
 #### The supervisor API
 HomeAssistant uses regex to partially restrict access to specific resources - either by completely blocking them or requiring admin permissions. This is true for both the HTTP API and the websocket API. One key difference between these APIs is that the websocket API is always authenticated.
