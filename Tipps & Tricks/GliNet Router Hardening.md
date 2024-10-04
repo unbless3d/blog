@@ -17,7 +17,7 @@ If you have enabled AdGuard as I did, the router will always redirect to HTTP. S
 Now, we are going to change that!
 
 ## Harden the webserver
-Because we want to use HTTP everywhere, we need to create a self-signed certificate and put it into `/etc/nginx/`:
+Because we want to use HTTPS everywhere, we need to create a self-signed certificate and put it into `/etc/nginx/`:
 
 ```shell
 openssl req -x509 -newkey rsa:4096 -keyout nginx.key -out nginx.cer -sha256 -days 3650
