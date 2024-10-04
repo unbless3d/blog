@@ -1,7 +1,6 @@
 ---
 date: 2024-10-04
 description: HomeAssistant suffers from an authorization bypass, which allows low privileged users access to all addons.
-expanded: true
 label: Authorization bypass
 tags: [HomeAssistant, Authorization bypass]
 ---
