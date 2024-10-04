@@ -1,3 +1,11 @@
+---
+date: 2024-10-04
+description: HomeAssistant suffers from an authorization bypass, which allows low privileged users access to all addons.
+expanded: true
+label: Authorization bypass
+tags: [HomeAssistant, Authorization bypass]
+---
+
 # Authorization bypass in HomeAssistant
 ---
 This writeup describes a vulnerability in HomeAssistant, a popular smart home gateway. HomeAssistant consists of multiple parts, making up its ecosystem and its functionality can be further extended via integrations or addons.
@@ -11,7 +19,7 @@ Unfortunately, HomeAssistant (HASS) uses its name quite often within their ecosy
 
 I will mostly talk about HASS Core in this blog, but I'll explicitly mention specific components where it is important.
 
-# The Vulnerability
+## The Vulnerability
 ---
 HomeAssistant suffers from an authorization bypass, where unprivileged users can access addons, restricted to administrators. The vulnerability lies in HomeAssistants ingress functionality, which proxies requests to the addon. During this process, no validation is performed whether a user is allowed to access the addon.
 
@@ -26,15 +34,15 @@ At the time of writing, this vulnerability is present on the latest version of H
 **Important Notice**
 This vulnerability has already been disclosed to HomeAssistant in August 2023, more information about this can be seen below.
 
-## Affected Versions
+### Affected Versions
 This vulnerability can only be exploited on Supervised or HAOS installations where addons are present:
 - HASS Core <= 2024.10.0
 - Supervisor <= 2024.09.1
 - Operating System <= 13.1
 
-## How does it work
+### How does it work
 
-### Addons and Addon registration
+#### Addons and Addon registration
 Addons are used to add extra functionality to HomeAssistant, like a web TTY or file editor. These addons run in a separate docker container and can be accessed through HomeAssistant via the ingress functionality.
 
 As soon as the HASSIO integration (the "supervisor" integration) starts its [initialization](https://github.com/home-assistant/core/blob/2024.6.1/homeassistant/components/hassio/__init__.py#L302), `async_setup_addon_panel()` is called, which then retrieves a list of addons from supervisor and registers them as a `Panel`:
@@ -49,7 +57,7 @@ As soon as the HASSIO integration (the "supervisor" integration) starts its [ini
 				- [Panel()](https://github.com/home-assistant/core/blob/2024.6.1/homeassistant/components/frontend/__init__.py#L279)
 				  This is the base panel class, used by every panel within HomeAssistant
 
-### Panels
+#### Panels
 Panels can be described as pages, which are rendered inside the HomeAssistant frontend. As described previously, addon frontends are internally handled as `Panel` objects.
 
 When querying the websocket API using `{"type":"get_panels", "id":XX}` as an administrator, HASS returns a list of available panels. Some of these panels have the `require_admin` field set to `true`. According to the [custom panel documentation](https://www.home-assistant.io/integrations/panel_custom/#require_admin), only administrators should be able to see these panels. When querying the same endpoint as a non-admin user, only panels with `require_admin` set to `false` are returned.
@@ -71,7 +79,7 @@ def websocket_get_panels(hass: HomeAssistant, connection: ActiveConnection, msg:
 
 > These panels will only be excluded from the sidebar for non-administrators. You can also find this in one of the comments in the panel definition: [`homeassistant\components\frontend\__init__.py`](https://github.com/home-assistant/core/blob/b28cdcfc497dcaabc2d88ac8d3dc4c555edfcbd7/homeassistant/components/frontend/__init__.py#L239)
 
-### The supervisor API
+#### The supervisor API
 HomeAssistant uses regex to partially restrict access to specific resources - either by completely blocking them or requiring admin permissions. This is true for both the HTTP API and the websocket API. One key difference between these APIs is that the websocket API is always authenticated.
 
 HASS Core also publishes a supervisor API and proxies requests to the supervisor. This API requires a user to have administrative rights with two exceptions:
@@ -81,7 +89,7 @@ HASS Core also publishes a supervisor API and proxies requests to the supervisor
   `{"type":"supervisor/api","endpoint":"/addons/{slug}/info","method":"get","id":XX}`
 
 ```python
-# Endpoints needed for ingress can't require admin because addons can set `panel_admin: false`
+## Endpoints needed for ingress can't require admin because addons can set `panel_admin: false`
 WS_NO_ADMIN_ENDPOINTS = re.compile(
 	r"^(?:"
 	r"|/ingress/(session|validate_session)"
@@ -89,14 +97,14 @@ WS_NO_ADMIN_ENDPOINTS = re.compile(
 	r")$"
 )
 
-# Here is more stuff
+## Here is more stuff
 
 async def websocket_supervisor_api(hass: HomeAssistant, connection: ActiveConnection, msg: dict[str, Any] -> None:
 	"""Websocket handler to call Supervisor API."""
 	
 	if not connection.user.is_admin and not WS_NO_ADMIN_ENDPOINTS.match(msg[ATTR_ENDPOINT]):
 		raise Unauthorized
-	# Stuff continues here
+	## Stuff continues here
 ```
 
 These two requests however are enough to access an addon, provided the addon slug is known. These slugs can be easily enumerated, but this is outside the scope of this blog.
@@ -109,15 +117,15 @@ The second request issues a session cookie (called `ingress_session`) by the sup
 async def handler(self, request: web.Request) -> web.Response | web.StreamResponse | web.WebSocketResponse:
 	"""Route data to Supervisor ingress service."""
 	
-	# Check Ingress Session
+	## Check Ingress Session
 	session = request.cookies.get(COOKIE_INGRESS)
 	if not self.sys_ingress.validate_session(session):
 		_LOGGER.warning("No valid ingress session %s", session)
 		raise HTTPUnauthorized()
 		
-	# Process requests
+	## Process requests
 ```
 
-# Disclosure
+## Disclosure
 ---
 I disclosed this issue back in August 2023, however I was told, that "user permissions can only be considered a visual change in the Home Assistant UI", which is also highlighted in the official documentation [here](https://www.home-assistant.io/docs/authentication/#user-accounts).
