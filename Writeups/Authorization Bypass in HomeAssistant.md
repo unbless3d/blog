@@ -51,7 +51,7 @@ This vulnerability can only be exploited on Supervised or HAOS installations whe
 #### Addons and Addon registration
 Addons are used to add extra functionality to HomeAssistant, like a web TTY or file editor. These addons run in a separate docker container and can be accessed through HomeAssistant via the ingress functionality.
 
-As soon as the HASSIO integration (the "supervisor" integration) starts its [initialization](https://github.com/home-assistant/core/blob/2024.6.1/homeassistant/components/hassio/__init__.py#L302), `async_setup_addon_panel()` is called, which then retrieves a list of addons from supervisor and registers them as a `Panel`:
+As soon as the HASSIO integration (the "supervisor" integration) starts its [initialization](https://github.com/home-assistant/core/blob/2024.6.1/homeassistant/components/hassio/__init__.py#L302), `async_setup_addon_panel()` is called, which then retrieves a list of addons from the supervisor and registers them as a `Panel`:
 
 - [async_setup_addon_panel()](https://github.com/home-assistant/core/blob/2024.6.1/homeassistant/components/hassio/addon_panel.py#L20)
 	- [hassio_addon_panel.get_panels()](https://github.com/home-assistant/core/blob/2024.6.1/homeassistant/components/hassio/addon_panel.py#L69)
@@ -87,16 +87,19 @@ def websocket_get_panels(hass: HomeAssistant, connection: ActiveConnection, msg:
 These panels will only be excluded from the sidebar for non-administrators. You can also find this in one of the comments in the panel definition: [`homeassistant\components\frontend\__init__.py`](https://github.com/home-assistant/core/blob/b28cdcfc497dcaabc2d88ac8d3dc4c555edfcbd7/homeassistant/components/frontend/__init__.py#L239)
 !!!
 
-#### The supervisor API
-HomeAssistant uses regex to partially restrict access to specific resources - either by completely blocking them or requiring admin permissions. This is true for both the HTTP API and the websocket API. One key difference between these APIs is that the websocket API is always authenticated.
+#### The API
+HomeAssistant has two ways of publishing its API, namely plain HTTP and websockets. One key difference between these is that calls over websockets are always authenticated. The APIs are also protected by regex which both filters potentially harmful traffic and only allows admins access to specific resources.
 
-HASS Core also publishes a supervisor API and proxies requests to the supervisor. This API requires a user to have administrative rights with two exceptions:
-- Requesting information about a specific addon
-  `{"type":"supervisor/api","endpoint":"/ingress/session","method":"post","id":XX}`
-- Requesting and validating an ingress session token
-  `{"type":"supervisor/api","endpoint":"/addons/{slug}/info","method":"get","id":XX}`
+While HASS Core has many different endpoints, it also proxies requests to the supervisor, which are published through the websocket. Additionally, most of these endpoints require administrative permissions with two exceptions:
+1. Requesting information about a specific addon: `{"type":"supervisor/api","endpoint":"/ingress/session","method":"post","id":XX}`
+2. Requesting and validating an ingress session token: `{"type":"supervisor/api","endpoint":"/addons/{slug}/info","method":"get","id":XX}`
 
-```python #14
+The first request is used to get information about a specific addon, including its access path (`ingress URL`) while the second call requests a session cookie (`ingress_session`) from the supervisor, which is [required to access the addon URL](https://github.com/home-assistant/supervisor/blob/2024.06.1/supervisor/api/ingress.py#L143). 
+
+With these two values we can now access every addon, provided the slug is known. These slugs can be easily enumerated, but this is outside the scope of this blog.
+
+This snippet shows allowed supervisor API endpoints:
+```python #2-7,14
 ## Endpoints needed for ingress can't require admin because addons can set `panel_admin: false`
 WS_NO_ADMIN_ENDPOINTS = re.compile(
 	r"^(?:"
@@ -105,22 +108,17 @@ WS_NO_ADMIN_ENDPOINTS = re.compile(
 	r")$"
 )
 
-## Here is more stuff
+## ...snip
 
 async def websocket_supervisor_api(hass: HomeAssistant, connection: ActiveConnection, msg: dict[str, Any] -> None:
 	"""Websocket handler to call Supervisor API."""
 	
 	if not connection.user.is_admin and not WS_NO_ADMIN_ENDPOINTS.match(msg[ATTR_ENDPOINT]):
 		raise Unauthorized
-	## Stuff continues here
+	## ...snip
 ```
 
-These two requests however are enough to access an addon, provided the addon slug is known. These slugs can be easily enumerated, but this is outside the scope of this blog.
-
-The first request is used to get information about a specific addon, which includes its access path (also called `ingress URL`).
-
-The second request issues a session cookie (called `ingress_session`) by the supervisor, which is [required to access the addon URL](https://github.com/home-assistant/supervisor/blob/2024.06.1/supervisor/api/ingress.py#L143). 
-
+A valid ingress cookie is the last piece of the puzzle to access the addon:
 ```python #6
 async def handler(self, request: web.Request) -> web.Response | web.StreamResponse | web.WebSocketResponse:
 	"""Route data to Supervisor ingress service."""
@@ -131,7 +129,7 @@ async def handler(self, request: web.Request) -> web.Response | web.StreamRespon
 		_LOGGER.warning("No valid ingress session %s", session)
 		raise HTTPUnauthorized()
 		
-	## Process requests
+	## ...snip
 ```
 
 ## Disclosure
