@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width,initial-scale=1">
-    <meta name="turbo-cache-control" content="no-cache" data-turbo-track="reload" data-track-token="3.6.0.781385682826">
+    <meta name="turbo-cache-control" content="no-cache" data-turbo-track="reload" data-track-token="3.6.0.781474872503">
 
     <!-- See retype.com -->
     <meta name="generator" content="Retype 3.6.0">
@@ -32,12 +32,12 @@
 
     <script data-cfasync="false">(function () { var el = document.documentElement, m = localStorage.getItem("doc_theme"), wm = window.matchMedia; if (m === "dark" || (!m && wm && wm("(prefers-color-scheme: dark)").matches)) { el.classList.add("dark") } else { el.classList.remove("dark") } })();</script>
 
-    <link href="../../resources/css/retype.css?v=3.6.0.781385682826" rel="stylesheet">
+    <link href="../../resources/css/retype.css?v=3.6.0.781474872503" rel="stylesheet">
 
-    <script data-cfasync="false" src="../../resources/js/config.js?v=3.6.0.781385682826" data-turbo-eval="false" defer></script>
+    <script data-cfasync="false" src="../../resources/js/config.js?v=3.6.0.781474872503" data-turbo-eval="false" defer></script>
     <script data-cfasync="false" src="../../resources/js/retype.js?v=3.6.0" data-turbo-eval="false" defer></script>
-    <script id="lunr-js" data-cfasync="false" src="../../resources/js/lunr.js?v=3.6.0.781385682826" data-turbo-eval="false" defer></script>
-    <script id="prism-js" data-cfasync="false" src="../../resources/js/prism.js?v=3.6.0.781385682826" defer></script>
+    <script id="lunr-js" data-cfasync="false" src="../../resources/js/lunr.js?v=3.6.0.781474872503" data-turbo-eval="false" defer></script>
+    <script id="prism-js" data-cfasync="false" src="../../resources/js/prism.js?v=3.6.0.781474872503" defer></script>
 </head>
 <body>
     <div id="docs-app" class="relative text-base antialiased text-gray-700 bg-white font-body dark:bg-dark-850 dark:text-dark-300">
@@ -275,7 +275,7 @@
     </h4>
 </doc-anchor-target>
 <p>Addons are used to add extra functionality to HomeAssistant, like a web TTY or file editor. These addons run in a separate docker container and can be accessed through HomeAssistant via the ingress functionality.</p>
-<p>As soon as the HASSIO integration (the &quot;supervisor&quot; integration) starts its <a href="https://github.com/home-assistant/core/blob/2024.6.1/homeassistant/components/hassio/__init__.py#L302">initialization</a>, <code v-pre>async_setup_addon_panel()</code> is called, which then retrieves a list of addons from supervisor and registers them as a <code v-pre>Panel</code>:</p>
+<p>As soon as the HASSIO integration (the &quot;supervisor&quot; integration) starts its <a href="https://github.com/home-assistant/core/blob/2024.6.1/homeassistant/components/hassio/__init__.py#L302">initialization</a>, <code v-pre>async_setup_addon_panel()</code> is called, which then retrieves a list of addons from the supervisor and registers them as a <code v-pre>Panel</code>:</p>
 <ul>
 <li><a href="https://github.com/home-assistant/core/blob/2024.6.1/homeassistant/components/hassio/addon_panel.py#L20">async_setup_addon_panel()</a>
 <ul>
@@ -341,22 +341,23 @@ def websocket_get_panels(hass: HomeAssistant, connection: ActiveConnection, msg:
         </div>
     </div>
 </div>
-<doc-anchor-target id="the-supervisor-api">
+<doc-anchor-target id="the-api">
     <h4>
-        <doc-anchor-trigger class="header-anchor-trigger" to="#the-supervisor-api">#</doc-anchor-trigger>
-        <span>The supervisor API</span>
+        <doc-anchor-trigger class="header-anchor-trigger" to="#the-api">#</doc-anchor-trigger>
+        <span>The API</span>
     </h4>
 </doc-anchor-target>
-<p>HomeAssistant uses regex to partially restrict access to specific resources - either by completely blocking them or requiring admin permissions. This is true for both the HTTP API and the websocket API. One key difference between these APIs is that the websocket API is always authenticated.</p>
-<p>HASS Core also publishes a supervisor API and proxies requests to the supervisor. This API requires a user to have administrative rights with two exceptions:</p>
-<ul>
-<li>Requesting information about a specific addon
-<code v-pre>{&quot;type&quot;:&quot;supervisor/api&quot;,&quot;endpoint&quot;:&quot;/ingress/session&quot;,&quot;method&quot;:&quot;post&quot;,&quot;id&quot;:XX}</code></li>
-<li>Requesting and validating an ingress session token
-<code v-pre>{&quot;type&quot;:&quot;supervisor/api&quot;,&quot;endpoint&quot;:&quot;/addons/{slug}/info&quot;,&quot;method&quot;:&quot;get&quot;,&quot;id&quot;:XX}</code></li>
-</ul>
+<p>HomeAssistant has two ways of publishing its API, namely plain HTTP and websockets. One key difference between these is that calls over websockets are always authenticated. The APIs are also protected by regex which both filters potentially harmful traffic and only allows admins access to specific resources.</p>
+<p>While HASS Core has many different endpoints, it also proxies requests to the supervisor, which are published through the websocket. Additionally, most of these endpoints require administrative permissions with two exceptions:</p>
+<ol>
+<li>Requesting information about a specific addon: <code v-pre>{&quot;type&quot;:&quot;supervisor/api&quot;,&quot;endpoint&quot;:&quot;/ingress/session&quot;,&quot;method&quot;:&quot;post&quot;,&quot;id&quot;:XX}</code></li>
+<li>Requesting and validating an ingress session token: <code v-pre>{&quot;type&quot;:&quot;supervisor/api&quot;,&quot;endpoint&quot;:&quot;/addons/{slug}/info&quot;,&quot;method&quot;:&quot;get&quot;,&quot;id&quot;:XX}</code></li>
+</ol>
+<p>The first request is used to get information about a specific addon, including its access path (<code v-pre>ingress URL</code>) while the second call requests a session cookie (<code v-pre>ingress_session</code>) from the supervisor, which is <a href="https://github.com/home-assistant/supervisor/blob/2024.06.1/supervisor/api/ingress.py#L143">required to access the addon URL</a>.</p>
+<p>With these two values we can now access every addon, provided the slug is known. These slugs can be easily enumerated, but this is outside the scope of this blog.</p>
+<p>This snippet shows allowed supervisor API endpoints:</p>
 <div class="codeblock-wrapper"><doc-codeblock line-numbers>
-<pre class="language-python" data-line="14"><code v-pre class="language-python">## Endpoints needed for ingress can't require admin because addons can set `panel_admin: false`
+<pre class="language-python" data-line="2-7,14"><code v-pre class="language-python">## Endpoints needed for ingress can't require admin because addons can set `panel_admin: false`
 WS_NO_ADMIN_ENDPOINTS = re.compile(
 	r&quot;^(?:&quot;
 	r&quot;|/ingress/(session|validate_session)&quot;
@@ -364,18 +365,16 @@ WS_NO_ADMIN_ENDPOINTS = re.compile(
 	r&quot;)$&quot;
 )
 
-## Here is more stuff
+## ...snip
 
 async def websocket_supervisor_api(hass: HomeAssistant, connection: ActiveConnection, msg: dict[str, Any] -&gt; None:
 	&quot;&quot;&quot;Websocket handler to call Supervisor API.&quot;&quot;&quot;
 	
 	if not connection.user.is_admin and not WS_NO_ADMIN_ENDPOINTS.match(msg[ATTR_ENDPOINT]):
 		raise Unauthorized
-	## Stuff continues here</code></pre>
+	## ...snip</code></pre>
 </doc-codeblock></div>
-<p>These two requests however are enough to access an addon, provided the addon slug is known. These slugs can be easily enumerated, but this is outside the scope of this blog.</p>
-<p>The first request is used to get information about a specific addon, which includes its access path (also called <code v-pre>ingress URL</code>).</p>
-<p>The second request issues a session cookie (called <code v-pre>ingress_session</code>) by the supervisor, which is <a href="https://github.com/home-assistant/supervisor/blob/2024.06.1/supervisor/api/ingress.py#L143">required to access the addon URL</a>.</p>
+<p>A valid ingress cookie is the last piece of the puzzle to access the addon:</p>
 <div class="codeblock-wrapper"><doc-codeblock line-numbers>
 <pre class="language-python" data-line="6"><code v-pre class="language-python">async def handler(self, request: web.Request) -&gt; web.Response | web.StreamResponse | web.WebSocketResponse:
 	&quot;&quot;&quot;Route data to Supervisor ingress service.&quot;&quot;&quot;
@@ -386,7 +385,7 @@ async def websocket_supervisor_api(hass: HomeAssistant, connection: ActiveConnec
 		_LOGGER.warning(&quot;No valid ingress session %s&quot;, session)
 		raise HTTPUnauthorized()
 		
-	## Process requests</code></pre>
+	## ...snip</code></pre>
 </doc-codeblock></div>
 <doc-anchor-target id="disclosure">
     <h2>
