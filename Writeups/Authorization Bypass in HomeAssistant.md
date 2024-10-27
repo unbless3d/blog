@@ -91,8 +91,8 @@ These panels will only be excluded from the sidebar for non-administrators. You 
 HomeAssistant has two ways of publishing its API, namely plain HTTP and websockets. One key difference between these is that calls over websockets are always authenticated. The APIs are also protected by regex which both filters potentially harmful traffic and only allows admins access to specific resources.
 
 While HASS Core has many different endpoints, it also proxies requests to the supervisor, which are published through the websocket. Additionally, most of these endpoints require administrative permissions with two exceptions:
-1. Requesting information about a specific addon: `{"type":"supervisor/api","endpoint":"/ingress/session","method":"post","id":XX}`
-2. Requesting and validating an ingress session token: `{"type":"supervisor/api","endpoint":"/addons/{slug}/info","method":"get","id":XX}`
+1. Requesting information about a specific addon: `{"type":"supervisor/api","endpoint":"/addons/{slug}/info","method":"get","id":XX}`
+2. Requesting and validating an ingress session token: `{"type":"supervisor/api","endpoint":"/ingress/session","method":"post","id":XX}`
 
 The first request is used to get information about a specific addon, including its access path (`ingress URL`) while the second call requests a session cookie (`ingress_session`) from the supervisor, which is [required to access the addon URL](https://github.com/home-assistant/supervisor/blob/2024.06.1/supervisor/api/ingress.py#L143). 
 
