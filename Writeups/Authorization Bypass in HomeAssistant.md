@@ -5,6 +5,7 @@ label: Authorization bypass in HomeAssistant
 tags: 
   - HomeAssistant
   - Authorization bypass
+  - Security Vulnerability
 layout: page
 icon: home-fill
 ---
@@ -40,11 +41,11 @@ At the time of writing, this vulnerability is present on the latest version of H
 This vulnerability has already been disclosed to HomeAssistant in August 2023, more information about this can be seen below.
 !!!
 
-### Affected Versions
-This vulnerability can only be exploited on Supervised or HAOS installations where addons are present:
-- HASS Core <= 2024.10.0
-- Supervisor <= 2024.09.1
-- Operating System <= 13.1
+### Tested Versions
+This vulnerability can only be exploited on Supervised or HAOS installations where addons are present. It was tested on the following versions
+- HASS Core <= 2024.10.4
+- Supervisor <= 2024.10.3
+- Operating System <= 13.2
 
 ### How does it work
 
@@ -135,3 +136,7 @@ async def handler(self, request: web.Request) -> web.Response | web.StreamRespon
 ## Disclosure
 ---
 I reported this issue back in August 2023, however I was told, that "user permissions can only be considered a visual change in the Home Assistant UI", which is also highlighted in the official documentation [here](https://www.home-assistant.io/docs/authentication/#user-accounts).
+
+!!!
+I assume that this vulnerability will be present in future versions until HomeAssistant decides to enforce a strict separation between users and administrators.
+!!!
