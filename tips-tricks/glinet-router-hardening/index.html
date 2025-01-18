@@ -3,15 +3,15 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width,initial-scale=1">
-    <meta name="turbo-cache-control" content="no-cache" data-turbo-track="reload" data-track-token="3.6.0.790531150653">
+    <meta name="turbo-cache-control" content="no-cache" data-turbo-track="reload" data-track-token="3.6.0.790532794480">
 
     <!-- See retype.com -->
     <meta name="generator" content="Retype 3.6.0">
 
     <!-- Primary Meta Tags -->
-    <title>GliNet Router Hardening | unbless3d</title>
-    <meta name="title" content="GliNet Router Hardening | unbless3d">
-    <meta name="description" content="Enabling HTTPS and securing cookies on GliNet routers to ensure no sensitive data is being transmitted over insecure channels.">
+    <title>GL.iNet Router Hardening | unbless3d</title>
+    <meta name="title" content="GL.iNet Router Hardening | unbless3d">
+    <meta name="description" content="Enabling HTTPS and securing cookies on GL.iNet routers to ensure no sensitive data is being transmitted over insecure channels.">
 
     <!-- Canonical -->
     <link rel="canonical" href="https://blog.unbless3d.xyz/tips-tricks/glinet-router-hardening/">
@@ -19,25 +19,25 @@
     <!-- Open Graph / Facebook -->
     <meta property="og:type" content="website">
     <meta property="og:url" content="https://blog.unbless3d.xyz/tips-tricks/glinet-router-hardening/">
-    <meta property="og:title" content="GliNet Router Hardening | unbless3d">
-    <meta property="og:description" content="Enabling HTTPS and securing cookies on GliNet routers to ensure no sensitive data is being transmitted over insecure channels.">
+    <meta property="og:title" content="GL.iNet Router Hardening | unbless3d">
+    <meta property="og:description" content="Enabling HTTPS and securing cookies on GL.iNet routers to ensure no sensitive data is being transmitted over insecure channels.">
     <meta property="og:image" content="https://blog.unbless3d.xyz/assets/glinet_force_https.png">
 
     <!-- Twitter -->
     <meta property="twitter:card" content="summary_large_image">
     <meta property="twitter:url" content="https://blog.unbless3d.xyz/tips-tricks/glinet-router-hardening/">
-    <meta property="twitter:title" content="GliNet Router Hardening | unbless3d">
-    <meta property="twitter:description" content="Enabling HTTPS and securing cookies on GliNet routers to ensure no sensitive data is being transmitted over insecure channels.">
+    <meta property="twitter:title" content="GL.iNet Router Hardening | unbless3d">
+    <meta property="twitter:description" content="Enabling HTTPS and securing cookies on GL.iNet routers to ensure no sensitive data is being transmitted over insecure channels.">
     <meta property="twitter:image" content="https://blog.unbless3d.xyz/assets/glinet_force_https.png">
 
     <script data-cfasync="false">(function () { var el = document.documentElement, m = localStorage.getItem("doc_theme"), wm = window.matchMedia; if (m === "dark" || (!m && wm && wm("(prefers-color-scheme: dark)").matches)) { el.classList.add("dark") } else { el.classList.remove("dark") } })();</script>
 
-    <link href="../../resources/css/retype.css?v=3.6.0.790531150653" rel="stylesheet">
+    <link href="../../resources/css/retype.css?v=3.6.0.790532794480" rel="stylesheet">
 
-    <script data-cfasync="false" src="../../resources/js/config.js?v=3.6.0.790531150653" data-turbo-eval="false" defer></script>
+    <script data-cfasync="false" src="../../resources/js/config.js?v=3.6.0.790532794480" data-turbo-eval="false" defer></script>
     <script data-cfasync="false" src="../../resources/js/retype.js?v=3.6.0" data-turbo-eval="false" defer></script>
-    <script id="lunr-js" data-cfasync="false" src="../../resources/js/lunr.js?v=3.6.0.790531150653" data-turbo-eval="false" defer></script>
-    <script id="prism-js" data-cfasync="false" src="../../resources/js/prism.js?v=3.6.0.790531150653" defer></script>
+    <script id="lunr-js" data-cfasync="false" src="../../resources/js/lunr.js?v=3.6.0.790532794480" data-turbo-eval="false" defer></script>
+    <script id="prism-js" data-cfasync="false" src="../../resources/js/prism.js?v=3.6.0.790532794480" defer></script>
 </head>
 <body>
     <div id="docs-app" class="relative text-base antialiased text-gray-700 bg-white font-body dark:bg-dark-850 dark:text-dark-300">
@@ -183,7 +183,7 @@
 <doc-anchor-target id="glinet-router-hardening" class="break-words">
     <h1>
         <doc-anchor-trigger class="header-anchor-trigger" to="#glinet-router-hardening">#</doc-anchor-trigger>
-        <span>GliNet Router Hardening</span>
+        <span>GL.iNet Router Hardening</span>
     </h1>
 </doc-anchor-target>
 <div class="-mt-3 mb-12 flex flex-wrap text-sm text-gray-400 dark:text-dark-350 items-center">
@@ -204,17 +204,17 @@
             </svg>
         </div>
         <div class="pr-5 ml-3 w-full">
-<p>This guide applies to firmware version v4.5.19 - There might be differences between older versions. Also some of these changes may be removed during an update, so make sure to check these (mainly applies to direct config file changes).</p>
+<p>This guide applies to firmware version v4.5.19 - There might be differences between older versions. Also some of these changes may be removed during an update, so make sure to check these (mainly applies to direct config file changes). For this demonstration, I used the GL.iNet GL-A1300.</p>
         </div>
     </div>
 </div>
-<p>The GliNet travel routes are quite useful, not only because they are small, but also because they support a wide range of addons like AdGuard or Wireguard.</p>
+<p>The GL.iNet travel routes are quite useful, not only because they are small, but also because they support a wide range of addons like AdGuard or Wireguard.</p>
 <p>While these routers are nice to travel with, there are some settings which can improve security on these devices.</p>
-<p>This is not an exhaustive list, but something I noticed while toying with this router for a bit:</p>
+<p>This is not an exhaustive list, but something I noticed while toying around with this router for a bit:</p>
 <ol>
 <li>Harden the webserver</li>
-<li>HTTPS on AdGuard</li>
-<li>Fix cookies</li>
+<li>Enable HTTPS on AdGuard</li>
+<li>Fixing insecure cookies</li>
 </ol>
 <doc-anchor-target id="harden-the-webserver">
     <h2>
@@ -228,7 +228,7 @@
     <figcaption class="caption">Forcing HTTPS</figcaption>
 </figure>
 </p>
-<p>Next we take a look at the TLS protocols nginx enables on this device. For this we take a look at <code v-pre>/etc/nginx/conf.d/gl.conf</code>:</p>
+<p>Next we take a look at the TLS protocols. The nginx configuration file for this router is located at <code v-pre>/etc/nginx/conf.d/gl.conf</code>:</p>
 <div class="codeblock-wrapper"><doc-codeblock line-numbers>
 <div class="codeblock-title">conf</div>
 <pre class="language-none" data-line="11"><code v-pre class="language-none"># ...SNIP
@@ -260,7 +260,7 @@ server {
 	# ...SNIP</code></pre>
 </doc-codeblock></div>
 <p>We notice that both <code v-pre>TLSv1</code> and <code v-pre>TLSv1.1</code> are offered. We can safely remove these and instead add <code v-pre>TLSv1.3</code>. Now we have to restart nginx again: <code v-pre>service nginx restart</code>.</p>
-<p>You might also have noticed <code v-pre>ssl_certificate</code> and <code v-pre>content_by_lua_file</code> - these files will be important later.</p>
+<p>You might have also noticed <code v-pre>ssl_certificate</code> and <code v-pre>content_by_lua_file</code> - these files will be important later.</p>
 <div class="flex mb-6">
     <div class="shrink-0 w-1 rounded-tl rounded-bl bg-blue-500 dark:bg-blue-400"></div>
     <div class="flex w-full py-4 border border-l-0 border-gray-300 rounded-tr rounded-br doc-alert bg-white dark:bg-dark-700 dark:border-dark-700" role="alert">
@@ -291,7 +291,7 @@ server {
             </svg>
         </div>
         <div class="pr-5 ml-3 w-full">
-<p>You can connect to the GliNet router using SSH with <code v-pre>root</code> and your password.</p>
+<p>You can connect to the router using SSH with <code v-pre>root</code> and your password.</p>
         </div>
     </div>
 </div>
@@ -301,9 +301,9 @@ server {
         <span>HTTPS on AdGuard</span>
     </h2>
 </doc-anchor-target>
-<p>If you have enabled AdGuard as I did, the web interface will always redirect to the AdGuard site over HTTP (regardless on the setting above). Since the login data is stored within a cookie (<code v-pre>Admin-Token</code>), everyone on that network could potentially sniff it and use it to log in.</p>
+<p>If you have enabled AdGuard as I did, the web interface will always redirect to the AdGuard site over HTTP (regardless on the setting above). Since the login data is stored within a cookie (called <code v-pre>Admin-Token</code>), everyone on that network could potentially sniff it and use it to log in.</p>
 <p>Now, we are going to change that!</p>
-<p>We recall from before that nginx uses the certificate located at <code v-pre>/etc/nginx/nginx.cer</code> and its corresponding key (<code v-pre>/etc/nginx/nginx.key</code>). We can tell AdGuard to also use this certificate for HTTPS. It will complain that the certificate is invalid, but in our case self signed certificates are OK (using a valid certificate is left as an exercise to the reader).</p>
+<p>We recall from before that nginx uses the certificate located at <code v-pre>/etc/nginx/nginx.cer</code> and its corresponding key (<code v-pre>/etc/nginx/nginx.key</code>). We can tell AdGuard to also use this certificate for itself as well. It will complain that the certificate is invalid, but in our case self signed certificates are OK (using a valid certificate is left as an exercise to the reader).</p>
 <p><figure class="content-center">
     <img src="../../assets/glinet_adguard_certificates.png" alt="Importing certificates">
     <figcaption class="caption">Importing certificates</figcaption>
@@ -320,15 +320,15 @@ server {
     </h2>
 </doc-anchor-target>
 <p>Although AdGuard is now also served over HTTPS, this still does not completely fix the issue that the admin cookie could be sent over HTTP. This is because nginx simply does not apply the <code v-pre>secure</code> flag on cookies.</p>
-<p>Since the GliNet UI would always redirect to AdGuard via HTTP, we can either change the UI or add the <code v-pre>secure</code> flag to our cookie, the latter probably being easier.</p>
-<p>We now have to figure out, when and how this cookie is being issued. We can use our trusty dev-tools and observe the login process. We notice that many calls are made to the <code v-pre>/rpc</code> endpoint. One in particular also returns our <code v-pre>Admin-Token</code> - Hoooray!</p>
+<p>Since the GL.iNet UI would always redirect to AdGuard via HTTP, we can either change the UI or add the <code v-pre>secure</code> flag to our cookie, the latter probably being easier.</p>
+<p>We now have to figure out, when and how this cookie is being issued. We notice that during the login process many calls to the <code v-pre>/rpc</code> endpoint are made. One in particular also returns our <code v-pre>Admin-Token</code> - Hoooray!</p>
 <p><figure class="content-center">
     <img src="../../assets/glinet_capture_login.png" alt="Issued admin cookie">
     <figcaption class="caption">Issued admin cookie</figcaption>
 </figure>
 </p>
-<p>We know from looking at nginx&#x27; config file, that calls to the <code v-pre>/rpc</code> endpoint are managed by <code v-pre>/usr/share/gl-ngx/oui-rpc.lua</code>, which we are now going to modify.</p>
-<p>Inside the function <code v-pre>rpc_method_login</code>, we see that nginx sets the cookie <code v-pre>Admin-Token</code> to some value. After appending <code v-pre>.. &quot;; Secure&quot;</code> to this line, we force nginx to serve our admin cookie with the secure flag. Now we have to restart nginx once again.</p>
+<p>From looking at nginx&#x27; config file, we know that calls to the <code v-pre>/rpc</code> endpoint are managed by <code v-pre>/usr/share/gl-ngx/oui-rpc.lua</code>, which we are now going to modify.</p>
+<p>Inside the function <code v-pre>rpc_method_login</code>, nginx sets the cookie <code v-pre>Admin-Token</code> to some value. After appending <code v-pre>.. &quot;; Secure&quot;</code> to this line, we force nginx to serve our admin cookie with the secure flag enabled. Now we have to restart nginx once again.</p>
 <doc-panels>
    <doc-panel id="old">
        <template #title>Old</template>
@@ -388,7 +388,7 @@ end
             </svg>
         </div>
         <div class="pr-5 ml-3 w-full">
-<p>If you have other websites running on GliNet which require this cookie, make sure to enable HTTPS for these as well.</p>
+<p>If you have other websites running on the router which require this cookie, make sure to enable HTTPS for these as well.</p>
         </div>
     </div>
 </div>
@@ -453,6 +453,6 @@ end
 
     <div id="docs-overlay-target"></div>
 
-    <script data-cfasync="false">window.__DOCS__ = { "title": "Hardening GliNet travel routers", level: 2, icon: "file", hasPrism: true, hasMermaid: false, hasMath: false, tocDepth: 23 }</script>
+    <script data-cfasync="false">window.__DOCS__ = { "title": "Hardening GL.iNet travel routers", level: 2, icon: "file", hasPrism: true, hasMermaid: false, hasMath: false, tocDepth: 23 }</script>
 </body>
 </html>
