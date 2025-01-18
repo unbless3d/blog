@@ -26,9 +26,7 @@ This is not an exhaustive list, but something I noticed while toying with this r
 3. Fix cookies
 
 ## Harden the webserver
-After the login, we navigate to the security page and enable the toggle `Force HTTPS`. This causes nginx to reboot and we have to log in again.
-
-Since we are already in the security page, we may disable all `Remote Access Control` settings, unless required.
+After the login, we navigate to the security page and enable the toggle `Force HTTPS`. This causes nginx to reboot and we have to log in again. Since we are already in the security page, we may disable all `Remote Access Control` settings, unless required.
 
 ![Forcing HTTPS](../assets/glinet_force_https.png)
 
@@ -43,7 +41,8 @@ server {
     listen [::]:80;
     
     listen 443 ssl;
-    listen [::]:443 ssl;                                                                                                                              
+    listen [::]:443 ssl;
+    
     ssl_protocols TLSv1 TLSv1.1 TLSv1.2;
     
     ssl_prefer_server_ciphers on;
