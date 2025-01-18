@@ -13,7 +13,7 @@ icon: shield-lock
 # GL.iNet Router Hardening
 ---
 !!!
-This guide applies to firmware version v4.5.19 - There might be differences between older versions. Also some of these changes may be removed during an update, so make sure to check these (mainly applies to direct config file changes). For this demonstration, I used the GL.iNet GL-A1300.
+This guide applies to firmware version v4.5.19 - There might be some differences between older versions. Also some of these changes may be removed during an update (mainly applies to direct config file changes). For this demonstration, I used the GL.iNet GL-A1300.
 !!!
 
 The GL.iNet travel routes are quite useful, not only because they are small, but also because they support a wide range of addons like AdGuard or Wireguard. 
@@ -70,7 +70,7 @@ You might have also noticed `ssl_certificate` and `content_by_lua_file` - these 
 You may also add additional headers like HSTS, which would prevent the browser from ever connecting over HTTP. But if an update would happen to revert the config back, you wouldn't be able to connect without clearing HSTS in your browser. Also feel free to change ciphers or disable server tokens. But this is not the main focus here.
 !!!
 
-!!!
+!!!secondary
 You can connect to the router using SSH with `root` and your password.
 !!!
 
@@ -127,6 +127,6 @@ end
 ```
 ===
 
-!!!
+!!!warning
 If you have other websites running on the router which require this cookie, make sure to enable HTTPS for these as well.
 !!!
