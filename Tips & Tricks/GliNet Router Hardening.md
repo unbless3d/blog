@@ -108,7 +108,7 @@ Inside the function `rpc_method_login`, nginx sets the cookie `Admin-Token` to s
 local function rpc_method_login(id, params)
 	
     -- ...SNIP
-    ngx.header["Set-Cookie"] = "Admin-Token=" .. data.sid .. "; Secure"
+    ngx.header["Set-Cookie"] = "Admin-Token=" .. data.sid
     
     local resp = rpc.result_response(id, data)
     ngx.say(cjson.encode(resp))
