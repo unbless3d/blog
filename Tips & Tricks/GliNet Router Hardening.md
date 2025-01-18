@@ -103,45 +103,27 @@ From looking at nginx' config file, we know that calls to the `/rpc` endpoint ar
 
 Inside the function `rpc_method_login`, nginx sets the cookie `Admin-Token` to some value. After appending `.. "; Secure"` to this line, we force nginx to serve our admin cookie with the secure flag enabled. Now we have to restart nginx once again.
 
-=== Old
-```lua #12
--- ...SNIP
+=== Original Lua script
+```lua #4
 local function rpc_method_login(id, params)
-    local res = ubus.call("gl-session", "login", params)
-    local code, data = res.code, res.data
-    
-    if code ~= 0 then
-        local resp = rpc.error_response(id, code, data)
-        ngx.say(cjson.encode(resp))
-        return
-    end
-    
-    ngx.header["Set-Cookie"] = "Admin-Token=" .. data.sid
-    
-    local resp = rpc.result_response(id, data)
-    ngx.say(cjson.encode(resp))
-end
--- ...SNIP
-```
-=== New
-```lua #12
--- ...SNIP
-local function rpc_method_login(id, params)
-    local res = ubus.call("gl-session", "login", params)
-    local code, data = res.code, res.data
-    
-    if code ~= 0 then
-        local resp = rpc.error_response(id, code, data)
-        ngx.say(cjson.encode(resp))
-        return
-    end
 	
+    -- ...SNIP
     ngx.header["Set-Cookie"] = "Admin-Token=" .. data.sid .. "; Secure"
     
     local resp = rpc.result_response(id, data)
     ngx.say(cjson.encode(resp))
 end
--- ...SNIP
+```
+=== Updated Lua script
+```lua #4
+local function rpc_method_login(id, params)
+	
+    -- ...SNIP
+    ngx.header["Set-Cookie"] = "Admin-Token=" .. data.sid .. "; Secure"
+    
+    local resp = rpc.result_response(id, data)
+    ngx.say(cjson.encode(resp))
+end
 ```
 ===
 
