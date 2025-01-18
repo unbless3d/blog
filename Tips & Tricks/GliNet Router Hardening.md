@@ -32,7 +32,7 @@ After the login, we navigate to the security page and enable the toggle `Force H
 
 Next we take a look at the TLS protocols. The nginx configuration file for this router is located at `/etc/nginx/conf.d/gl.conf`:
 
-```conf #11
+```conf #11 ./gl.conf
 # ...SNIP
 init_by_lua_file /usr/share/gl-ngx/oui-init.lua;
 
