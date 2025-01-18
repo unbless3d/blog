@@ -67,7 +67,7 @@ We notice that both `TLSv1` and `TLSv1.1` are offered. We can safely remove thes
 You might have also noticed `ssl_certificate` and `content_by_lua_file` - these files will be important later.
 
 !!!warning
-Feel free to change other settings like server tokens or adding headers like HSTS, which would prevent the browser from ever connecting over HTTP. However, beware that an update could revert these changes, which would force you to clear HSTS in your browser. If you want to modify  ciphers, have a look at [Mozillas SSL config generator](https://ssl-config.mozilla.org/#server=nginx&version=1.17.7&config=intermediate&openssl=1.1.1m&hsts=false&ocsp=false&guideline=5.7){:target="_blank"}.
+Feel free to change other settings like server tokens or adding headers like HSTS, which would prevent the browser from ever connecting over HTTP. However, beware that an update could revert these changes, which would force you to clear HSTS in your browser. If you want to modify  ciphers, have a look at <a href="https://ssl-config.mozilla.org/#server=nginx&version=1.17.7&config=intermediate&openssl=1.1.1m&hsts=false&ocsp=false&guideline=5.7" target="_blank">Mozillas SSL config generator</a>.
 !!!
 
 !!!
