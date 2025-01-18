@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width,initial-scale=1">
-    <meta name="turbo-cache-control" content="no-cache" data-turbo-track="reload" data-track-token="3.6.0.790533224301">
+    <meta name="turbo-cache-control" content="no-cache" data-turbo-track="reload" data-track-token="3.6.0.790534158430">
 
     <!-- See retype.com -->
     <meta name="generator" content="Retype 3.6.0">
@@ -32,12 +32,12 @@
 
     <script data-cfasync="false">(function () { var el = document.documentElement, m = localStorage.getItem("doc_theme"), wm = window.matchMedia; if (m === "dark" || (!m && wm && wm("(prefers-color-scheme: dark)").matches)) { el.classList.add("dark") } else { el.classList.remove("dark") } })();</script>
 
-    <link href="../../resources/css/retype.css?v=3.6.0.790533224301" rel="stylesheet">
+    <link href="../../resources/css/retype.css?v=3.6.0.790534158430" rel="stylesheet">
 
-    <script data-cfasync="false" src="../../resources/js/config.js?v=3.6.0.790533224301" data-turbo-eval="false" defer></script>
+    <script data-cfasync="false" src="../../resources/js/config.js?v=3.6.0.790534158430" data-turbo-eval="false" defer></script>
     <script data-cfasync="false" src="../../resources/js/retype.js?v=3.6.0" data-turbo-eval="false" defer></script>
-    <script id="lunr-js" data-cfasync="false" src="../../resources/js/lunr.js?v=3.6.0.790533224301" data-turbo-eval="false" defer></script>
-    <script id="prism-js" data-cfasync="false" src="../../resources/js/prism.js?v=3.6.0.790533224301" defer></script>
+    <script id="lunr-js" data-cfasync="false" src="../../resources/js/lunr.js?v=3.6.0.790534158430" data-turbo-eval="false" defer></script>
+    <script id="prism-js" data-cfasync="false" src="../../resources/js/prism.js?v=3.6.0.790534158430" defer></script>
 </head>
 <body>
     <div id="docs-app" class="relative text-base antialiased text-gray-700 bg-white font-body dark:bg-dark-850 dark:text-dark-300">
@@ -230,7 +230,7 @@
 </p>
 <p>Next we take a look at the TLS protocols. The nginx configuration file for this router is located at <code v-pre>/etc/nginx/conf.d/gl.conf</code>:</p>
 <div class="codeblock-wrapper"><doc-codeblock line-numbers>
-<div class="codeblock-title">conf</div>
+<div class="codeblock-title">conf ./gl.conf</div>
 <pre class="language-none" data-line="11"><code v-pre class="language-none"># ...SNIP
 init_by_lua_file /usr/share/gl-ngx/oui-init.lua;
 
@@ -330,48 +330,30 @@ server {
 <p>From looking at nginx&#x27; config file, we know that calls to the <code v-pre>/rpc</code> endpoint are managed by <code v-pre>/usr/share/gl-ngx/oui-rpc.lua</code>, which we are now going to modify.</p>
 <p>Inside the function <code v-pre>rpc_method_login</code>, nginx sets the cookie <code v-pre>Admin-Token</code> to some value. After appending <code v-pre>.. &quot;; Secure&quot;</code> to this line, we force nginx to serve our admin cookie with the secure flag enabled. Now we have to restart nginx once again.</p>
 <doc-panels>
-   <doc-panel id="old">
-       <template #title>Old</template>
+   <doc-panel id="original-lua-script">
+       <template #title>Original Lua script</template>
 <div class="codeblock-wrapper"><doc-codeblock line-numbers>
-<pre class="language-lua" data-line="12"><code v-pre class="language-lua">-- ...SNIP
-local function rpc_method_login(id, params)
-    local res = ubus.call(&quot;gl-session&quot;, &quot;login&quot;, params)
-    local code, data = res.code, res.data
-    
-    if code ~= 0 then
-        local resp = rpc.error_response(id, code, data)
-        ngx.say(cjson.encode(resp))
-        return
-    end
-    
-    ngx.header[&quot;Set-Cookie&quot;] = &quot;Admin-Token=&quot; .. data.sid
-    
-    local resp = rpc.result_response(id, data)
-    ngx.say(cjson.encode(resp))
-end
--- ...SNIP</code></pre>
-</doc-codeblock></div>
-   </doc-panel>
-   <doc-panel id="new">
-       <template #title>New</template>
-<div class="codeblock-wrapper"><doc-codeblock line-numbers>
-<pre class="language-lua" data-line="12"><code v-pre class="language-lua">-- ...SNIP
-local function rpc_method_login(id, params)
-    local res = ubus.call(&quot;gl-session&quot;, &quot;login&quot;, params)
-    local code, data = res.code, res.data
-    
-    if code ~= 0 then
-        local resp = rpc.error_response(id, code, data)
-        ngx.say(cjson.encode(resp))
-        return
-    end
+<pre class="language-lua" data-line="4"><code v-pre class="language-lua">local function rpc_method_login(id, params)
 	
+    -- ...SNIP
     ngx.header[&quot;Set-Cookie&quot;] = &quot;Admin-Token=&quot; .. data.sid .. &quot;; Secure&quot;
     
     local resp = rpc.result_response(id, data)
     ngx.say(cjson.encode(resp))
-end
--- ...SNIP</code></pre>
+end</code></pre>
+</doc-codeblock></div>
+   </doc-panel>
+   <doc-panel id="updated-lua-script">
+       <template #title>Updated Lua script</template>
+<div class="codeblock-wrapper"><doc-codeblock line-numbers>
+<pre class="language-lua" data-line="4"><code v-pre class="language-lua">local function rpc_method_login(id, params)
+	
+    -- ...SNIP
+    ngx.header[&quot;Set-Cookie&quot;] = &quot;Admin-Token=&quot; .. data.sid .. &quot;; Secure&quot;
+    
+    local resp = rpc.result_response(id, data)
+    ngx.say(cjson.encode(resp))
+end</code></pre>
 </doc-codeblock></div>
    </doc-panel>
 </doc-panels>
