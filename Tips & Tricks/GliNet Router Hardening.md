@@ -80,7 +80,7 @@ If you have enabled AdGuard as I did, the web interface will always redirect to 
 
 Now, we are going to change that!
 
-We recall from before that nginx uses the certificate located at `/etc/nginx/nginx.cer` and its corresponding key (`/etc/nginx/nginx.key`). We can tell AdGuard to also use this certificate for HTTPS. It will complain that the certificate is invalid, but in our case self signed certificates are OK (using a valid certificate is left as an exercise for the reader).
+We recall from before that nginx uses the certificate located at `/etc/nginx/nginx.cer` and its corresponding key (`/etc/nginx/nginx.key`). We can tell AdGuard to also use this certificate for HTTPS. It will complain that the certificate is invalid, but in our case self signed certificates are OK (using a valid certificate is left as an exercise to the reader).
 
 ![Importing certificates](../assets/glinet_adguard_certificates.png)
 
