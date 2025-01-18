@@ -1,7 +1,7 @@
 ---
 date: 2025-01-18
-description: Enabling HTTPS and securing cookies on GliNet routers to ensure no sensitive data is being transmitted over insecure channels.
-label: Hardening GliNet travel routers
+description: Enabling HTTPS and securing cookies on GL.iNet routers to ensure no sensitive data is being transmitted over insecure channels.
+label: Hardening GL.iNet travel routers
 tags:
   - Hardening
   - web
@@ -10,27 +10,27 @@ layout: page
 icon: shield-lock
 ---
 
-# GliNet Router Hardening
+# GL.iNet Router Hardening
 ---
 !!!
-This guide applies to firmware version v4.5.19 - There might be differences between older versions. Also some of these changes may be removed during an update, so make sure to check these (mainly applies to direct config file changes).
+This guide applies to firmware version v4.5.19 - There might be differences between older versions. Also some of these changes may be removed during an update, so make sure to check these (mainly applies to direct config file changes). For this demonstration, I used the GL.iNet GL-A1300.
 !!!
 
-The GliNet travel routes are quite useful, not only because they are small, but also because they support a wide range of addons like AdGuard or Wireguard. 
+The GL.iNet travel routes are quite useful, not only because they are small, but also because they support a wide range of addons like AdGuard or Wireguard. 
 
 While these routers are nice to travel with, there are some settings which can improve security on these devices.
 
-This is not an exhaustive list, but something I noticed while toying with this router for a bit:
+This is not an exhaustive list, but something I noticed while toying around with this router for a bit:
 1. Harden the webserver
-2. HTTPS on AdGuard
-3. Fix cookies
+2. Enable HTTPS on AdGuard
+3. Fixing insecure cookies
 
 ## Harden the webserver
 After the login, we navigate to the security page and enable the toggle `Force HTTPS`. This causes nginx to reboot and we have to log in again. Since we are already in the security page, we may disable all `Remote Access Control` settings, unless required.
 
 ![Forcing HTTPS](../assets/glinet_force_https.png)
 
-Next we take a look at the TLS protocols nginx enables on this device. For this we take a look at `/etc/nginx/conf.d/gl.conf`:
+Next we take a look at the TLS protocols. The nginx configuration file for this router is located at `/etc/nginx/conf.d/gl.conf`:
 
 ```conf #11
 # ...SNIP
@@ -64,23 +64,23 @@ server {
 
 We notice that both `TLSv1` and `TLSv1.1` are offered. We can safely remove these and instead add `TLSv1.3`. Now we have to restart nginx again: `service nginx restart`.
 
-You might also have noticed `ssl_certificate` and `content_by_lua_file` - these files will be important later.
+You might have also noticed `ssl_certificate` and `content_by_lua_file` - these files will be important later.
 
 !!!
 You may also add additional headers like HSTS, which would prevent the browser from ever connecting over HTTP. But if an update would happen to revert the config back, you wouldn't be able to connect without clearing HSTS in your browser. Also feel free to change ciphers or disable server tokens. But this is not the main focus here.
 !!!
 
 !!!
-You can connect to the GliNet router using SSH with `root` and your password.
+You can connect to the router using SSH with `root` and your password.
 !!!
 
 ## HTTPS on AdGuard
 
-If you have enabled AdGuard as I did, the web interface will always redirect to the AdGuard site over HTTP (regardless on the setting above). Since the login data is stored within a cookie (`Admin-Token`), everyone on that network could potentially sniff it and use it to log in.
+If you have enabled AdGuard as I did, the web interface will always redirect to the AdGuard site over HTTP (regardless on the setting above). Since the login data is stored within a cookie (called `Admin-Token`), everyone on that network could potentially sniff it and use it to log in.
 
 Now, we are going to change that!
 
-We recall from before that nginx uses the certificate located at `/etc/nginx/nginx.cer` and its corresponding key (`/etc/nginx/nginx.key`). We can tell AdGuard to also use this certificate for HTTPS. It will complain that the certificate is invalid, but in our case self signed certificates are OK (using a valid certificate is left as an exercise to the reader).
+We recall from before that nginx uses the certificate located at `/etc/nginx/nginx.cer` and its corresponding key (`/etc/nginx/nginx.key`). We can tell AdGuard to also use this certificate for itself as well. It will complain that the certificate is invalid, but in our case self signed certificates are OK (using a valid certificate is left as an exercise to the reader).
 
 ![Importing certificates](../assets/glinet_adguard_certificates.png)
 
@@ -93,15 +93,15 @@ openssl req -x509 -newkey rsa:4096 -keyout adguard.key -out adguard.cer -sha256 
 ## The problem with insecure cookies
 Although AdGuard is now also served over HTTPS, this still does not completely fix the issue that the admin cookie could be sent over HTTP. This is because nginx simply does not apply the `secure` flag on cookies.
 
-Since the GliNet UI would always redirect to AdGuard via HTTP, we can either change the UI or add the `secure` flag to our cookie, the latter probably being easier. 
+Since the GL.iNet UI would always redirect to AdGuard via HTTP, we can either change the UI or add the `secure` flag to our cookie, the latter probably being easier. 
 
-We now have to figure out, when and how this cookie is being issued. We can use our trusty dev-tools and observe the login process. We notice that many calls are made to the `/rpc` endpoint. One in particular also returns our `Admin-Token` - Hoooray!
+We now have to figure out, when and how this cookie is being issued. We notice that during the login process many calls to the `/rpc` endpoint are made. One in particular also returns our `Admin-Token` - Hoooray!
 
 ![Issued admin cookie](../assets/glinet_capture_login.png)
 
-We know from looking at nginx' config file, that calls to the `/rpc` endpoint are managed by `/usr/share/gl-ngx/oui-rpc.lua`, which we are now going to modify.
+From looking at nginx' config file, we know that calls to the `/rpc` endpoint are managed by `/usr/share/gl-ngx/oui-rpc.lua`, which we are now going to modify.
 
-Inside the function `rpc_method_login`, we see that nginx sets the cookie `Admin-Token` to some value. After appending `.. "; Secure"` to this line, we force nginx to serve our admin cookie with the secure flag. Now we have to restart nginx once again.
+Inside the function `rpc_method_login`, nginx sets the cookie `Admin-Token` to some value. After appending `.. "; Secure"` to this line, we force nginx to serve our admin cookie with the secure flag enabled. Now we have to restart nginx once again.
 
 === Old
 ```lua #12
@@ -146,5 +146,5 @@ end
 ===
 
 !!!
-If you have other websites running on GliNet which require this cookie, make sure to enable HTTPS for these as well.
+If you have other websites running on the router which require this cookie, make sure to enable HTTPS for these as well.
 !!!
