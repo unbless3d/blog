@@ -1,6 +1,6 @@
 ---
 date: 2025-01-18
-description: Enabling HTTPS and securing cookies on GL.iNet routers to ensure no sensitive data is being transmitted over insecure channels.
+description: Patching some GL.iNet travel router weaknesses by modifying ngnix configurations, fixing lua scripts and enabling HTTPS on AdGuard.
 label: Hardening GL.iNet travel routers
 tags:
   - Hardening
@@ -13,7 +13,7 @@ icon: shield-lock
 # GL.iNet Router Hardening
 ---
 !!!
-This guide applies to firmware version v4.5.19 - There might be some differences between older versions. Also some of these changes may be removed during an update (mainly applies to direct config file changes). For this demonstration, I used the GL.iNet GL-A1300.
+This guide applies to firmware version v4.5.19 - There might be some differences between older versions. Also some of these changes may be removed during an update (mainly applies to direct config file changes). For this demonstration, I used the GL.iNet GL-A1300 (which already uses end-of-life packages :/).
 !!!
 
 The GL.iNet travel routes are quite useful, not only because they are small, but also because they support a wide range of addons like AdGuard or Wireguard. 
@@ -66,11 +66,11 @@ We notice that both `TLSv1` and `TLSv1.1` are offered. We can safely remove thes
 
 You might have also noticed `ssl_certificate` and `content_by_lua_file` - these files will be important later.
 
-!!!
-You may also add additional headers like HSTS, which would prevent the browser from ever connecting over HTTP. But if an update would happen to revert the config back, you wouldn't be able to connect without clearing HSTS in your browser. Also feel free to change ciphers or disable server tokens. But this is not the main focus here.
+!!!warning
+Feel free to change other settings like server tokens or adding headers like HSTS, which would prevent the browser from ever connecting over HTTP. However, beware that an update could revert these changes, which would force you to clear HSTS in your browser. If you want to modify  ciphers, have a look at [Mozillas SSL config generator](https://ssl-config.mozilla.org/#server=nginx&version=1.17.7&config=intermediate&openssl=1.1.1m&hsts=false&ocsp=false&guideline=5.7).
 !!!
 
-!!!secondary
+!!!
 You can connect to the router using SSH with `root` and your password.
 !!!
 
